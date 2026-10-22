@@ -1,0 +1,48 @@
+App started, pid=20608
+=== before ===
+w0 0,200 800x600
+w1 1120,200 800x600
+w2 300,700 600x300
+w3 -8,-8 1936x1056  maximized=True
+=== docked ===
+w0 -758,310 800x600
+w1 1878,200 800x600
+w2 -558,0 600x300
+w3 -8,-1014 1936x1056
+screenshot=E:\Gestosh\tests\artifacts\dock-test.png
+foreground before=722136 docked=722136 restored=722136
+[PASS] foreground window unchanged  before=722136 docked=722136 restored=722136
+=== restored ===
+w0 0,200 800x600
+w1 1120,200 800x600
+w2 300,700 600x300
+w3 -8,-8 1936x1056
+maximized after restore=True
+[PASS] w0 size unchanged  before=800x600 docked=800x600
+[PASS] w1 size unchanged  before=800x600 docked=800x600
+[PASS] w2 size unchanged  before=600x300 docked=600x300
+[PASS] w3 size unchanged  before=1936x1056 docked=1936x1056
+[PASS] w0 docked to left edge  -758,310 800x600
+[PASS] w1 docked to right edge  1878,200 800x600
+[PASS] w2 avoids the bottom taskbar  -558,0 600x300
+[PASS] w2 docked to an available edge  -558,0 600x300
+[PASS] w3 (maximized) docked to top edge  -8,-1014 1936x1056
+[PASS] animation has intermediate positions  distinct x=20
+[PASS] w0 restored position  before=0,200 800x600 after=0,200 800x600
+[PASS] w1 restored position  before=1120,200 800x600 after=1120,200 800x600
+[PASS] w2 restored position  before=300,700 600x300 after=300,700 600x300
+[PASS] w3 restored position  before=-8,-8 1936x1056 after=-8,-8 1936x1056
+[PASS] maximized state restored  wasMax=True isMax=True
+[PASS] re-docked for click test  -758,310 800x600
+[PASS] click restore w0  before=0,200 800x600 after=0,200 800x600
+[PASS] click restore w1  before=1120,200 800x600 after=1120,200 800x600
+[PASS] click restore w2  before=300,700 600x300 after=300,700 600x300
+[PASS] click restore w3  before=-8,-8 1936x1056 after=-8,-8 1936x1056
+[PASS] click restores maximized state  isMax=True
+[PASS] click on close button did not close the window  0,200 800x600
+[PASS] close-button click restore w0  before=0,200 800x600 after=0,200 800x600
+[PASS] close-button click restore w1  before=1120,200 800x600 after=1120,200 800x600
+[PASS] close-button click restore w2  before=300,700 600x300 after=300,700 600x300
+[PASS] close-button click restore w3  before=-8,-8 1936x1056 after=-8,-8 1936x1056
+
+FAILURES=0

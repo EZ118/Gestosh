@@ -1,0 +1,8 @@
+app pid=10916
+[PASS] hidden window exists : 4327522
+[PASS] command message registered : 49872
+mid-transition screenshot=E:\Gestosh\tests\artifacts\expose-mid.png
+[PASS] App Expose overlay opened : hwnd=4524612 visible=True
+overlay rect=0,0 1920x1080
+screenshot=E:\Gestosh\tests\artifacts\expose-test.png
+[PASS] Escape closes App Expose : hwnd=4524612

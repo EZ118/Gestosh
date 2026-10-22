@@ -1,0 +1,9 @@
+[PASS] settings dialog opens : hwnd=7931320
+  dialog rect=721,364 478x311
+[PASS] dialog has a sensible size : 478x311
+  screenshot: E:\Gestosh\tests\artifacts\settings-dialog.png
+[PASS] OK saves the current mappings : saves=1 three=drag down=expose up=taskview horizontal=desktop edge=actioncenter
+[PASS] dialog closes after saving : hwnd=0
+[PASS] dialog exposes its combo boxes : three=1836542 down=6815982
+[PASS] changed mappings are returned : saves=2 three=none down=taskview
+[PASS] cancel leaves the mapping untouched : saves=2

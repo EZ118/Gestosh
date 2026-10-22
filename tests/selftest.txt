@@ -1,0 +1,37 @@
+[PASS] 3-finger drag begins and moves
+[PASS] 3-finger drag releases
+[PASS] 3-finger downward still starts a drag
+[PASS] 4-finger swipe down opens App Expose
+[PASS] 4-finger App Expose commits on release
+[PASS] short 4-finger swipe cancels
+[PASS] 4-finger swipe up closes App Expose
+[PASS] 4-finger swipe up opens Task View when App Expose is closed
+[PASS] 2-finger right-edge left swipe opens Action Center
+[PASS] 2-finger center swipe does not open Action Center
+[PASS] 5-finger pinch-out docks exactly once
+[PASS] 5-finger pinch-in restores
+[PASS] 5-finger noise does not trigger
+[PASS] dock left keeps size
+[PASS] dock left exposes 42px
+[PASS] dock right keeps size
+[PASS] dock right exposes 42px
+[PASS] dock top keeps size
+[PASS] dock top exposes 42px
+[PASS] dock bottom keeps size
+[PASS] dock bottom exposes 42px
+[PASS] tiny window does not become fully off-screen
+[PASS] layout never chooses the taskbar edge
+[PASS] config parses ints
+[PASS] config parses doubles
+[PASS] config parses dock values
+[INFO] HID parser test device: touchpad: \\?\HID#GXTP7863&Col02#4&15672ccf&0&0001#{4d1e55b2-f16f-11cf-88cb-001111000030} |   reportId=4 inputReportLength=30 contactCount=True contacts=5 |   link 1: id=True x=[0,1919] y=[0,1079] tip=True conf=True |   link 2: id=True x=[0,1919] y=[0,1079] tip=True conf=True |   link 3: id=True x=[0,1919] y=[0,1079] tip=True conf=True |   link 4: id=True x=[0,1919] y=[0,1079] tip=True conf=True |   link 5: id=True x=[0,1919] y=[0,1079] tip=True conf=True |   includesReportId=unknown | 
+[PASS] HID parser reads a full 5-contact report
+[PASS] HID parser detects the report ID
+[PASS] HID parser can prepend a missing report ID
+[PASS] HID parser uses the report length instead of a coincidental first byte
+[PASS] HID parser treats an idle report as no active contacts
+[INFO] VirtualDesktopManager available=True
+[PASS] window scanner is enumerable
+[INFO] eligible top-level windows on this desktop: 3
+
+PASS=32 FAIL=0
