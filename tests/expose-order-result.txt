@@ -1,0 +1,14 @@
+[PASS] Gestosh started
+[PASS] four test windows created
+  click 320,70 target=0x5c08ea under=0x5c08ea
+  foreground after click: 0xb30232
+  first foreground: 0x5c08ea
+[PASS] App Expose opened (first) : hwnd=10683916
+[PASS] App Expose closed (first)
+  click 320,530 target=0x420482 under=0x420482
+  foreground after click: 0x5c08ea
+  second foreground: 0x420482
+[PASS] stacking order changed between the two looks : zBefore=18 zAfter=12 fg1=6031594 fg2=4326530
+[PASS] App Expose opened (second) : hwnd=10749452
+  differing pixels: 0.16%
+[PASS] App Expose layout does not depend on the foreground window : 0.16%

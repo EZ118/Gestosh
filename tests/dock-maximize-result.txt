@@ -1,0 +1,14 @@
+[PASS] test window created : hwnd=3738066
+  original restore rect: 200,150 640x480
+[PASS] test window is maximized : zoomed=True
+  maximized window: -8,-8 1936x1056
+  maximized client: 0,23 1920x1017
+[PASS] computed a client-preserving window rect : -8,-8 1936x1056
+[PASS] window is normal while docked : zoomed=False
+[PASS] direct maximize works : zoomed=True
+[PASS] direct maximize does not move the window : -8,-8 1936x1056 vs -8,-8 1936x1056
+[PASS] window stays maximized after the placement update : zoomed=True
+[PASS] placement update does not move the maximized window : -8,-8 1936x1056
+[PASS] client stays identical : 0,23 1920x1017
+  stored restore rect: 200,150 640x480
+[PASS] restore rect is remembered for the next unmaximize : showCmd=3 delta=0

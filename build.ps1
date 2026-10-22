@@ -19,7 +19,7 @@ if (-not (Test-Path $csc)) {
 $sources = Get-ChildItem (Join-Path $root 'src') -Filter '*.cs' | Sort-Object Name | ForEach-Object { $_.FullName }
 $dist = Join-Path $root 'dist'
 New-Item -ItemType Directory -Force -Path $dist | Out-Null
-$version = '1.4.0.0'
+$version = '1.5.0.0'
 
 $icon = Join-Path $root 'assets\Gestosh.ico'
 $manifest = Join-Path $root 'src\Gestosh.manifest'

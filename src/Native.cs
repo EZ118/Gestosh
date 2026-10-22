@@ -83,6 +83,9 @@ namespace Gestosh
         public const int WS_CAPTION = 0x00C00000;
         public const int WS_THICKFRAME = 0x00040000;
         public const uint WS_POPUP = 0x80000000;
+        public const uint WS_MAXIMIZE = 0x01000000;
+        public const uint WS_MINIMIZE = 0x20000000;
+        public const uint WS_OVERLAPPEDWINDOW = 0x00CF0000;
 
         public const uint SWP_NOSIZE = 0x0001;
         public const uint SWP_NOMOVE = 0x0002;
@@ -644,6 +647,12 @@ namespace Gestosh
 
         [DllImport("user32.dll")]
         public static extern int GetSystemMetrics(int index);
+        [DllImport("user32.dll")]
+        public static extern bool SetCursorPos(int x, int y);
+        [DllImport("user32.dll")]
+        public static extern void mouse_event(uint flags, uint dx, uint dy, uint data, UIntPtr extra);
+        public const uint MOUSEEVENTF_LEFTDOWN = 0x0002;
+        public const uint MOUSEEVENTF_LEFTUP = 0x0004;
 
         [DllImport("user32.dll", SetLastError = true)]
         public static extern bool SetProcessDPIAware();
@@ -912,6 +921,14 @@ namespace Gestosh
         public static extern bool SetWindowTextW(IntPtr hWnd, string text);
         [DllImport("user32.dll")]
         public static extern int GetSysColor(int index);
+        [DllImport("user32.dll")]
+        public static extern IntPtr GetMenu(IntPtr hWnd);
+        [DllImport("user32.dll")]
+        public static extern bool ClientToScreen(IntPtr hWnd, ref POINT point);
+        [DllImport("user32.dll")]
+        public static extern bool AdjustWindowRectEx(ref RECT rect, uint style, bool menu, uint exStyle);
+        [DllImport("user32.dll")]
+        public static extern bool AdjustWindowRectExForDpi(ref RECT rect, uint style, bool menu, uint exStyle, uint dpi);
         [DllImport("user32.dll")]
         public static extern IntPtr SetActiveWindow(IntPtr hWnd);
         [DllImport("user32.dll")]

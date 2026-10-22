@@ -147,7 +147,6 @@ namespace Gestosh
         int _progressDuration;
         bool _closeWhenZero;
         bool _restorePreviousOnClose;
-        IntPtr _activateAfterClose;
 
         int _hot = -1;
         int _drag = -1;
@@ -495,10 +494,27 @@ namespace Gestosh
             _background = _panel = _border = _accent = _hover = _font = IntPtr.Zero;
         }
 
+        /// <summary>
+        /// Stable order that ignores the current z-order and the foreground window, so the
+        /// same set of windows always produces the same arrangement. Windows are ordered by
+        /// their place on screen (top, then left); windows stacked on the same spot
+        /// (maximized windows) fall back to the handle, which never changes while the window
+        /// is alive - titles change (browser tabs) and would move thumbnails around.
+        /// </summary>
+        internal static int CompareExposeOrder(WindowInfo a, WindowInfo b)
+        {
+            int c = a.Rect.Top.CompareTo(b.Rect.Top);
+            if (c != 0) return c;
+            c = a.Rect.Left.CompareTo(b.Rect.Left);
+            if (c != 0) return c;
+            return a.Hwnd.ToInt64().CompareTo(b.Hwnd.ToInt64());
+        }
+
         void BuildItems(List<WindowInfo> windows)
         {
             _items.Clear();
             int n = windows.Count;
+            if (n > 1) windows.Sort(CompareExposeOrder);
             _focus = n == 0 ? -1 : FindFocus(windows);
             if (n == 0) { _selected = -1; return; }
 
@@ -524,32 +540,100 @@ namespace Gestosh
                 return;
             }
 
-            double[] baseScale = new double[n];
-            int referenceLong = Math.Min(430, Math.Max(220, (int)(Math.Min(viewport.Width, viewport.Height) * 0.32)));
-            for (int i = 0; i < n; i++)
-            {
-                int longSide = Math.Max(120, Math.Max(_items[i].Window.Rect.Width, _items[i].Window.Rect.Height));
-                baseScale[i] = Math.Max(0.15, Math.Min(0.6, (double)referenceLong / longSide));
-            }
+            BuildGridLayout(viewport, n);
+        }
 
-            LayoutCandidate best = null;
-            for (int rows = 1; rows <= n; rows++)
-            {
-                if (n == 2 && rows != 1) break;
-                var lines = BuildLines(rows);
-                var candidate = ScoreLayout(lines, rows, baseScale, viewport);
-                if (best == null || candidate.Score > best.Score) best = candidate;
-            }
+        const int GridGapX = 16;
+        const int GridGapY = 16;
 
-            if (best != null)
+        /// <summary>
+        /// macOS-like grid: try every row count and keep the one whose cell aspect ratio is
+        /// closest to the windows' aspect ratio (area weighted, log distance), with a small
+        /// penalty for unused cells. This avoids degenerate one-row / one-column layouts.
+        /// </summary>
+        internal static void ChooseGrid(int count, double targetRatio, int width, int height,
+            out int rows, out int columns)
+        {
+            rows = 1;
+            columns = Math.Max(1, count);
+            if (count <= 1) return;
+
+            double best = double.MinValue;
+            for (int candidate = 1; candidate <= count; candidate++)
             {
-                for (int i = 0; i < n; i++)
+                int cols = (count + candidate - 1) / candidate;
+                double cellWidth = (width - GridGapX * (cols - 1)) / (double)cols;
+                double cellHeight = (height - GridGapY * (candidate - 1)) / (double)candidate;
+                if (cellWidth < 40 || cellHeight < 30) continue;
+
+                double cellRatio = cellWidth / cellHeight;
+                double score = -Math.Abs(Math.Log(cellRatio / Math.Max(0.05, targetRatio)));
+                int unused = candidate * cols - count;
+                score -= 0.25 * unused / (double)count;
+                if (score > best)
                 {
-                    _items[i].Target = best.Rects[i];
-                    _items[i].Scale = best.Scales[i];
+                    best = score;
+                    rows = candidate;
+                    columns = cols;
                 }
-                _lastLayoutRows = best.Rows;
             }
+        }
+
+        double TargetAspect()
+        {
+            double weighted = 0;
+            double total = 0;
+            foreach (var item in _items)
+            {
+                double w = Math.Max(80, item.Window.Rect.Width);
+                double h = Math.Max(60, item.Window.Rect.Height);
+                double area = w * h;
+                weighted += (w / h) * area;
+                total += area;
+            }
+            if (total <= 0) return 16.0 / 9.0;
+            return Math.Max(0.4, Math.Min(3.0, weighted / total));
+        }
+
+        void BuildGridLayout(RECT viewport, int count)
+        {
+            int rows;
+            int columns;
+            ChooseGrid(count, TargetAspect(), viewport.Width, viewport.Height, out rows, out columns);
+
+            double cellWidth = (viewport.Width - GridGapX * (columns - 1)) / (double)columns;
+            double cellHeight = (viewport.Height - GridGapY * (rows - 1)) / (double)rows;
+            if (cellWidth < 20) cellWidth = 20;
+            if (cellHeight < 15) cellHeight = 15;
+
+            for (int i = 0; i < count; i++)
+            {
+                int row = i / columns;
+                int column = i % columns;
+                int inRow = Math.Min(columns, count - row * columns);
+
+                double rowWidth = cellWidth * inRow + GridGapX * (inRow - 1);
+                double rowLeft = viewport.Left + (viewport.Width - rowWidth) / 2.0;
+                double cellLeft = rowLeft + column * (cellWidth + GridGapX);
+                double cellTop = viewport.Top + row * (cellHeight + GridGapY);
+
+                var item = _items[i];
+                double w = Math.Max(80, item.Window.Rect.Width);
+                double h = Math.Max(60, item.Window.Rect.Height);
+                double scale = Math.Min(0.6, Math.Min(cellWidth / w, cellHeight / h));
+                scale = Math.Max(0.05, scale);
+
+                int width = Math.Max(40, (int)Math.Round(w * scale));
+                int height = Math.Max(30, (int)Math.Round(h * scale));
+                int left = (int)Math.Round(cellLeft + (cellWidth - width) / 2.0);
+                int top = (int)Math.Round(cellTop + (cellHeight - height) / 2.0);
+                item.Target.Left = left;
+                item.Target.Top = top;
+                item.Target.Right = left + width;
+                item.Target.Bottom = top + height;
+                item.Scale = scale;
+            }
+            _lastLayoutRows = rows;
         }
 
         RECT GetViewport()
@@ -896,7 +980,6 @@ namespace Gestosh
             {
                 _closeWhenZero = false;
                 _restorePreviousOnClose = false;
-                _activateAfterClose = IntPtr.Zero;
                 AnimateProgressTo(1.0, 600);
             }
             else
@@ -907,19 +990,12 @@ namespace Gestosh
 
         void BeginCloseAnimation(bool restorePrevious)
         {
-            BeginCloseAnimation(restorePrevious, IntPtr.Zero);
-        }
-
-        void BeginCloseAnimation(bool restorePrevious, IntPtr activateAfter)
-        {
             if (_disposed) return;
             _restorePreviousOnClose = restorePrevious;
-            _activateAfterClose = activateAfter;
             _closeWhenZero = true;
             if (_progress <= 0.001)
             {
                 Close(restorePrevious);
-                if (activateAfter != IntPtr.Zero) FocusSource(activateAfter);
             }
             else
             {
@@ -1007,11 +1083,8 @@ namespace Gestosh
                 Native.KillTimer(_hwnd, new IntPtr(TimerProgress));
                 if (_progressTo <= 0.001 && _closeWhenZero)
                 {
-                    IntPtr activate = _activateAfterClose;
-                    _activateAfterClose = IntPtr.Zero;
                     bool restore = _restorePreviousOnClose;
                     Close(restore);
-                    if (activate != IntPtr.Zero) FocusSource(activate);
                 }
             }
         }
@@ -1390,7 +1463,14 @@ namespace Gestosh
             Native.SetWindowLongPtr(_hwnd, Native.GWL_EXSTYLE,
                 new IntPtr(exStyle & ~(long)Native.WS_EX_NOACTIVATE));
             ForceForeground();
-            BeginCloseAnimation(false, source);
+
+            // Hand the foreground to the selected window now, while the overlay still
+            // covers the screen. Doing it after the close animation made the window
+            // appear first and jump to the foreground afterwards, which looked like a
+            // flash; here the switch happens behind the overlay and is invisible.
+            FocusSource(source);
+
+            BeginCloseAnimation(false);
         }
 
         void FocusSource(IntPtr source)
@@ -1426,7 +1506,6 @@ namespace Gestosh
             UninstallKeyboardHook();
             UninstallMouseHook();
             _closeWhenZero = false;
-            _activateAfterClose = IntPtr.Zero;
             if (_hwnd != IntPtr.Zero)
             {
                 Native.KillTimer(_hwnd, new IntPtr(TimerSnap));

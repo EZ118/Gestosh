@@ -237,11 +237,81 @@ namespace Gestosh
                 if (!entry.WasMaximized) continue;
                 if (Native.IsIconic(entry.Hwnd)) continue;
                 if (!entry.HasPlacement || entry.OriginalPlacement.showCmd == 0) continue;
-                var placement = entry.OriginalPlacement;
-                placement.length = Marshal.SizeOf(typeof(WINDOWPLACEMENT));
-                if (!Native.SetWindowPlacement(entry.Hwnd, ref placement))
-                    Log.Warn("Could not restore maximized state for 0x" + entry.Hwnd.ToInt64().ToString("x"));
+                MaximizeWithRestorePlacement(entry);
             }
+        }
+
+        /// <summary>
+        /// Maximizes the window first and only then writes the real restore rectangle.
+        /// Calling SetWindowPlacement on a normal window makes Windows restore it to the
+        /// old rectangle and maximize again, which is the visible flash; maximizing the
+        /// window that already sits on the maximized frame is a no-op geometry-wise.
+        /// </summary>
+        void MaximizeWithRestorePlacement(DockEntry entry)
+        {
+            if (Native.IsIconic(entry.Hwnd)) return;
+            if (!Native.IsZoomed(entry.Hwnd))
+                Native.ShowWindow(entry.Hwnd, Native.SW_SHOWMAXIMIZED);
+            var placement = entry.OriginalPlacement;
+            placement.length = Marshal.SizeOf(typeof(WINDOWPLACEMENT));
+            if (!Native.SetWindowPlacement(entry.Hwnd, ref placement))
+                Log.Warn("Could not restore maximized state for 0x" + entry.Hwnd.ToInt64().ToString("x"));
+        }
+
+        /// <summary>Screen rectangle of a window's client area.</summary>
+        internal static RECT ClientScreenRect(IntPtr hwnd)
+        {
+            var result = new RECT();
+            RECT client;
+            if (!Native.GetClientRect(hwnd, out client)) return result;
+            var origin = new Native.POINT();
+            origin.X = client.Left;
+            origin.Y = client.Top;
+            if (!Native.ClientToScreen(hwnd, ref origin)) return result;
+            result.Left = origin.X;
+            result.Top = origin.Y;
+            result.Right = origin.X + client.Width;
+            result.Bottom = origin.Y + client.Height;
+            return result;
+        }
+
+        /// <summary>
+        /// Window rectangle that keeps the current client area when the window is turned
+        /// into a normal (restored) window. A maximized window has a thinner non-client
+        /// area, so re-maximizing a same-frame-size normal window resized the client and
+        /// made the window visibly flash; keeping the client identical removes that resize.
+        /// </summary>
+        internal static bool TryGetClientPreservingRect(IntPtr hwnd, int dpi, out RECT windowRect)
+        {
+            windowRect = new RECT();
+            RECT client = ClientScreenRect(hwnd);
+            if (client.Width <= 0 || client.Height <= 0) return false;
+
+            long style = Native.GetWindowLongPtr(hwnd, Native.GWL_STYLE).ToInt64();
+            long exStyle = Native.GetWindowLongPtr(hwnd, Native.GWL_EXSTYLE).ToInt64();
+            uint plainStyle = (uint)style & ~(Native.WS_MAXIMIZE | Native.WS_MINIMIZE);
+            bool hasMenu = Native.GetMenu(hwnd) != IntPtr.Zero;
+            if (dpi <= 0) dpi = Native.GetDpi(hwnd);
+
+            RECT rect = client;
+            bool adjusted;
+            try
+            {
+                adjusted = Native.AdjustWindowRectExForDpi(ref rect, plainStyle, hasMenu, (uint)exStyle, (uint)dpi);
+            }
+            catch (EntryPointNotFoundException)
+            {
+                adjusted = false;
+            }
+            catch (DllNotFoundException)
+            {
+                adjusted = false;
+            }
+            if (!adjusted)
+                adjusted = Native.AdjustWindowRectEx(ref rect, plainStyle, hasMenu, (uint)exStyle);
+            if (!adjusted) return false;
+            windowRect = rect;
+            return true;
         }
 
         bool PrepareMaximized(DockEntry entry)
@@ -251,10 +321,15 @@ namespace Gestosh
             placement.length = Marshal.SizeOf(typeof(WINDOWPLACEMENT));
             placement.showCmd = Native.SW_SHOWNORMAL;
             placement.flags = 0;
-            placement.rcNormalPosition = entry.OriginalRect;
+
+            RECT target;
+            if (!TryGetClientPreservingRect(entry.Hwnd, entry.Dpi, out target))
+                target = entry.OriginalRect;
+            placement.rcNormalPosition = target;
+
             if (!Native.SetWindowPlacement(entry.Hwnd, ref placement)) return false;
-            bool moved = Native.SetWindowPos(entry.Hwnd, IntPtr.Zero, entry.OriginalRect.Left, entry.OriginalRect.Top,
-                entry.OriginalRect.Width, entry.OriginalRect.Height,
+            bool moved = Native.SetWindowPos(entry.Hwnd, IntPtr.Zero, target.Left, target.Top,
+                target.Width, target.Height,
                 Native.SWP_NOZORDER | Native.SWP_NOACTIVATE | Native.SWP_NOOWNERZORDER);
             if (!moved)
             {
@@ -264,7 +339,9 @@ namespace Gestosh
                 Native.SetWindowPlacement(entry.Hwnd, ref original);
                 return false;
             }
-            Log.Debug("Converted maximized window 0x" + entry.Hwnd.ToInt64().ToString("x") + " to same-size normal window.");
+            entry.OriginalRect = target;
+            Log.Debug("Converted maximized window 0x" + entry.Hwnd.ToInt64().ToString("x") +
+                " to a normal window that keeps its client rect.");
             return true;
         }
 
@@ -299,9 +376,7 @@ namespace Gestosh
                 if (!entry.IsAlive) continue;
                 if (entry.WasMaximized && entry.HasPlacement && entry.OriginalPlacement.showCmd != 0)
                 {
-                    var placement = entry.OriginalPlacement;
-                    placement.length = Marshal.SizeOf(typeof(WINDOWPLACEMENT));
-                    Native.SetWindowPlacement(entry.Hwnd, ref placement);
+                    MaximizeWithRestorePlacement(entry);
                 }
                 else
                 {

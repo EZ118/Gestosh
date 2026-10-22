@@ -1,0 +1,26 @@
+﻿2026-10-22 15:21:41.038 [I] Gestosh starting. PID=21720 exe=E:\Gestosh\dist\Gestosh.Debug.exe
+2026-10-22 15:21:41.039 [I] Config: E:\Gestosh\tests\dock-restore.ini
+2026-10-22 15:21:41.039 [I] Log: E:\Gestosh\tests\dock-restore-app.log
+2026-10-22 15:21:41.054 [I] VirtualDesktopManager available.
+2026-10-22 15:21:41.063 [I] touchpad: \\?\HID#GXTP7863&Col02#4&15672ccf&0&0001#{4d1e55b2-f16f-11cf-88cb-001111000030}
+  reportId=4 inputReportLength=30 contactCount=True contacts=5
+  link 1: id=True x=[0,1919] y=[0,1079] tip=True conf=True
+  link 2: id=True x=[0,1919] y=[0,1079] tip=True conf=True
+  link 3: id=True x=[0,1919] y=[0,1079] tip=True conf=True
+  link 4: id=True x=[0,1919] y=[0,1079] tip=True conf=True
+  link 5: id=True x=[0,1919] y=[0,1079] tip=True conf=True
+  includesReportId=unknown
+
+2026-10-22 15:21:41.064 [I] Raw input registered (precision touchpad).
+2026-10-22 15:21:41.070 [D] App Expose wallpaper: c:\users\zhou\pictures\wallpaper\majestic_mountain_bliss.jpg 3840x2160
+2026-10-22 15:21:41.247 [I] Gestosh 1.5.0.0 (10-22 15:21) initialized. Touchpad found=True, tray=False, desktopSwipe=on
+2026-10-22 15:21:42.818 [D] Window scan: 1 eligible.
+2026-10-22 15:21:42.897 [D] Converted maximized window 0x38094e to a normal window that keeps its client rect.
+2026-10-22 15:21:42.901 [I] Docking 1 window(s).
+2026-10-22 15:21:43.271 [I] Dock complete.
+2026-10-22 15:21:43.272 [I] Dock click hook installed.
+2026-10-22 15:21:43.272 [I] Dock Win+D hook installed.
+2026-10-22 15:21:44.199 [I] Restoring 1 window(s).
+2026-10-22 15:21:44.656 [I] Restore complete.
+2026-10-22 15:21:46.326 [I] Shutting down.
+2026-10-22 15:21:46.333 [I] Stopped.

@@ -1,9 +1,9 @@
-﻿# Gestosh
+# Gestosh
 
 Windows 精密触摸板（Windows Precision Touchpad）手势扩展。  
 **不使用任何第三方库**，只依赖 Windows 自带的 .NET Framework 4.8 和 Win32 API。
 
-作者：**EZ118** · 版本：**1.4.0.0**
+作者：**EZ118** · 版本：**1.5.0.0**
 
 已实现：
 
@@ -18,11 +18,28 @@ Windows 精密触摸板（Windows Precision Touchpad）手势扩展。
 - **全程不改变窗口大小**；最大化窗口先以“相同外框大小”的普通窗口参与移动，恢复时再还原最大化状态。
 - 贴边/恢复使用平滑过渡动画（默认 340 ms，60 FPS）。
 - 只处理**当前虚拟桌面**的窗口（`IVirtualDesktopManager`）；支持多显示器；自动避开任务栏所在边；同边窗口沿边排开而不是扇形堆叠。
-- **App Expose**：四指向下滑动**随手势进度**展开；打开、点击空白、悬停都不抢原窗口焦点，只有选中缩略图才切换前台。缩略图按**候选行数 + 加权评分**布局，尽量保留窗口在桌面上的相对方位；背景固定使用当前壁纸，**不做模糊、不截屏、不在每帧改变亮度**，避免闪烁；悬停显示白色边框和标题 tooltip；支持 Tab/Shift+Tab、方向键、Enter/Space、Esc；鼠标在 App Expose 中仍可移动。**不显示标题栏，也不在窗口下方显示窗口标题**。
+- **App Expose**：四指向下滑动**随手势进度**展开；打开、点击空白、悬停都不抢原窗口焦点，只有选中缩略图才切换前台。缩略图按**宽高比拟合的网格**布局（类似 macOS Mission Control）：7 个窗口是 3×3 网格，而不是一列或一行；背景固定使用当前壁纸，**不做模糊、不截屏、不在每帧改变亮度**，避免闪烁；悬停显示白色边框和标题 tooltip；支持 Tab/Shift+Tab、方向键、Enter/Space、Esc；鼠标在 App Expose 中仍可移动。**不显示标题栏，也不在窗口下方显示窗口标题**。
 - **Win+D 交互保护**：贴边状态下按 Win+D，会先把 Gestosh 的窗口放回真实位置，再交给 Windows，避免窗口永久卡在贴边状态。
 - 三指/四指/五指手势不影响单指移动和双指滚动（唯一的例外是双指右侧边缘手势）。
 
 ![icon](assets/Gestosh-preview.png)
+
+---
+
+## 系统要求
+
+- **Windows 10 版本 1809（build 17763）或更高**，或 **Windows 11**；x86 / x64 均可（AnyCPU，不需要单独的 32 位版本）。
+- **.NET Framework 4.8**：Windows 10 1903 起和 Windows 11 已内置；Windows 10 1809 需要手动安装。这是唯一需要额外装的东西。
+- **Windows 精密触摸板（Precision Touchpad）**，至少 3 个接触点：
+  - 3 点：三指拖拽；
+  - 4 点：四指 App Exposé、任务视图、切换桌面；
+  - 5 点：五指贴边 / 恢复（4 点触摸板用不了五指手势，其余功能不受影响）。
+- **DWM 桌面合成**（Windows 10/11 默认开启，用于 App Exposé 的缩略图和桌面切换动画）。
+- **不需要管理员权限**，普通用户即可安装和运行；只有要移动“以管理员身份运行”的窗口时，才需要以管理员启动 Gestosh。
+
+不适用：老式 Synaptics/ELAN 私有驱动触摸板、被驱动模拟成普通鼠标的触摸板、触摸屏（没有 PTP 原始输入）。Windows 10 1607–1709 理论上能跑，但已停止支持、PerMonitorV2 DPI 不完整，不提供支持；Windows 7 / 8 / 8.1 没有虚拟桌面和任务视图，未测试。远程桌面 / 虚拟机里通常没有精密触摸板设备，手势不可用。
+
+已测试环境：Windows 10 21H2（19044），Goodix `27c6:01e0` 精密触摸板，5 个接触点，报告 ID 4，30 字节输入报告。
 
 ---
 
@@ -119,7 +136,7 @@ powershell -ExecutionPolicy Bypass -File uninstall.ps1 -Purge
 | 产品名称 | `Gestosh` |
 | 文件说明 | 跟随系统 UI 语言：`Gestosh - 精密触摸板手势工具`（中文）、`Gestosh - precision touchpad gestures`（英）、`Gestosh - gestes du pavé tactile de précision`（法）、`Gestosh - жесты точной сенсорной панели`（俄）、`Gestosh - gestos del panel táctil de precisión`（西）、`Gestosh - Gesten für Präzisionstouchpads`（德） |
 | 备注 | 对应语言的一句话简介（本 README 的摘要） |
-| 文件版本 / 产品版本 | `1.4.0.0` / `1.4.0` |
+| 文件版本 / 产品版本 | `1.5.0.0` / `1.5.0` |
 | 版权 | `Copyright © 2026 EZ118. All rights reserved.` |
 | 原始文件名 | `Gestosh.exe` |
 
@@ -192,8 +209,9 @@ powershell -ExecutionPolicy Bypass -File sign.ps1 -SelfSigned
 - 四指向下：进度 = `dy / exposeSwipeDistance`（默认 0.16），必须垂直占优（`exposeSwipeVerticalRatio` = 1.5）并且在 `exposeSwipeMaxMs` 内，动画跟着手指；
 - 四指向上（App Expose 已打开）：进度 = `-dy / exposeSwipeDistance`，随手势倒放，松手时进度过半就关闭；
 - 打开动画 650 ms，提交 600 ms，关闭 500 ms，缩略图回弹 160 ms，全部走 `ease-in-out`；
-- overlay 是 `WS_EX_TOPMOST | WS_EX_TOOLWINDOW | WS_EX_NOACTIVATE`，`WM_MOUSEACTIVATE` 返回 `MA_NOACTIVATE`：**打开、点击空白、悬停、键盘选择都不会改变前台窗口**；只有点击缩略图或按 Enter/Space 才清除 `WS_EX_NOACTIVATE` 并把目标窗口像 Alt-Tab 一样置前（不设为置顶）；
+- overlay 是 `WS_EX_TOPMOST | WS_EX_TOOLWINDOW | WS_EX_NOACTIVATE`，`WM_MOUSEACTIVATE` 返回 `MA_NOACTIVATE`：**打开、点击空白、悬停、键盘选择都不会改变前台窗口**；只有点击缩略图或按 Enter/Space 才清除 `WS_EX_NOACTIVATE` 并把目标窗口像 Alt-Tab 一样置前（不设为置顶）。**置前发生在遮罩仍然覆盖屏幕的时候**（关闭动画开始之前），所以动画结束、遮罩消失时目标窗口已经在前台，不会出现“先出现再跳到前台”的一下闪烁。
 - 缩略图是 DWM 缩略图，源窗口不移动、不改大小、不改 Z 序；
+- **排列顺序与 Z 序、当前前台窗口无关**：扫描到的窗口先按屏幕位置排序（上→下，同一行再左→右），位置相同（最大化/叠在一起）时按窗口句柄（窗口存活期间不变，标题变化不会移动缩略图）；所以同一个窗口集合每次打开 App Expose 的排列都一样，切换窗口不会换位置。当前前台窗口只影响“选中高亮”落在哪一格。
 - 鼠标钩子只拦截左右键，**`WM_MOUSEMOVE` 永远放行**，所以 App Expose 打开时鼠标仍然能动；
 - 键盘钩子处理 Tab/Shift+Tab、方向键、Enter/Space、Esc；按 Win、Win+Tab、Alt+Tab 等不相关快捷键会关闭 App Expose 并吞掉该按键，避免两个界面叠在一起。
 
@@ -205,13 +223,18 @@ powershell -ExecutionPolicy Bypass -File sign.ps1 -SelfSigned
 
 ### App Expose 布局算法
 
+模仿 macOS Mission Control 的“按宽高比拟合网格”：
+
 - 视口取当前显示器工作区（`SPI_GETWORKAREA`），四周留 `padding = 32`，缩略图之间 `gap = 16`；
-- 依次尝试 1..N 行，每行窗口数上限为 `ceil(N / rows)`，生成候选排列；
-- 每个候选按 `fillRatio + 0.8*uniformity + 1.2*spatialFidelity + 0.3*stability - scalePenalty - 0.5*orphanPenalty` 评分：
-  - `layoutScale` 在扣除 padding 和所有 gap 后，取能同时适配宽/高的最大缩放（上限为窗口原始大小的 60%）；
-  - `spatialFidelity` 用窗口对原始中心向量与缩略图中心向量的夹角余弦平均值，保留桌面相对方位；
-  - `orphanPenalty` 惩罚最后一行明显少于平均行数，避免“沙堆”；
-- 选择最高分；`N = 1` 居中，`N = 2` 强制单行并排。
+- 目标宽高比 = 所有窗口宽高比按面积加权平均（限制在 0.4–3.0）；
+- 依次尝试 1..N 行，列数 `columns = ceil(N / rows)`，计算单元格宽高比 `cellWidth / cellHeight`；
+- 评分 = `-|ln(单元格宽高比 / 目标宽高比)| - 0.25 * 空单元格数 / N`：
+  - 用对数距离，横竖两个方向上的偏差等价；
+  - 轻微惩罚空单元格，避免“7 个窗口排成 1 列”这种退化解；
+- 选最高分，然后把每个窗口按自己的宽高比缩放到单元格内（`scale = min(0.6, cellW/w, cellH/h)`），在单元格里水平垂直居中；
+- 行内窗口数不足时整行居中，所以 7 个窗口会得到 3×3 的网格（最后一行一个居中），而不是一列或一行；
+- 顺序仍然是前面的确定性排序（屏幕位置 → 句柄），与 Z 序无关；
+- `N = 1` 居中显示单张。
 
 ### Task View / 操作中心
 
@@ -376,19 +399,25 @@ dist\Gestosh.Debug.exe --diagnose 30
 dist\Gestosh.Debug.exe --selftest
 ```
 
-**45 项全部通过**（结果同时写入 `tests/selftest.txt`），包括：真实设备的 preparsed data 合成 5 点 HID 报告解析（报告 ID 有无、报告长度消歧、空闲报告）、三指向下仍然拖拽、四指 App Expose 打开/提交/取消/上滑关闭、四指上滑打开 Task View、双指右侧边缘左滑打开操作中心、四指左右滑动切换桌面（方向、跟手更新、松手总位移、斜向不触发、overlay 不可用不重复尝试、App Expose 中不触发）、手势映射（配置解析、写回不丢其他键、映射为“无”时不响应、四指下开任务视图、四指上开 App Exposé），以及“任务栏边不参与贴边”的布局测试。
+**53 项全部通过**（结果同时写入 `tests/selftest.txt`），包括：真实设备的 preparsed data 合成 5 点 HID 报告解析（报告 ID 有无、报告长度消歧、空闲报告）、三指向下仍然拖拽、四指 App Expose 打开/提交/取消/上滑关闭、四指上滑打开 Task View、双指右侧边缘左滑打开操作中心、四指左右滑动切换桌面（方向、跟手更新、松手总位移、斜向不触发、overlay 不可用不重复尝试、App Expose 中不触发）、App Expose 缩略图排序（与 Z 序无关、按屏幕位置、同位置按句柄、标题变化不影响）与网格布局（7 个窗口 3×3、4 个 2×2、2 个并排、12 个多行）、手势映射（配置解析、写回不丢其他键、映射为“无”时不响应、四指下开任务视图、四指上开 App Exposé），以及“任务栏边不参与贴边”的布局测试。
 
 ### 窗口集成测试
 
 ```powershell
 # 需要先关闭正在运行的 Gestosh
 tests\DockTest.exe
+tests\DockRestoreTest.exe
 tests\ExposeTest.exe
+tests\ExposeFocusTest.exe
+tests\ExposeOrderTest.exe
 tests\DesktopSwipeTest.exe
 tests\SettingsDialogTest.exe
 ```
 
 - `DockTest.exe`：窗口尺寸不变、动画有多个中间位置、恢复误差 ≤ 2px、最大化恢复、任务栏在底部时不贴底、同边窗口分开、点击贴边窗口可恢复、点击关闭按钮不会关窗。
+- `ExposeFocusTest.exe`：打开 App Expose，用真实按键选中一个窗口，验证**前台在遮罩仍然可见时就已经切到目标窗口**（旧实现要等遮罩销毁后才置前，也就是那一下闪），遮罩关闭后前台保持不变。A/B 验证过：把置前推迟到遮罩关闭之后，这个测试会失败。
+- `ExposeOrderTest.exe`：摆四个**不同颜色**的固定位置窗口，先让窗口 1 在前台、开一次 App Expose 截图；再改变堆叠顺序（`SetWindowPos(HWND_TOP)`）和前台窗口、开第二次截图；逐像素比较。排列稳定时差异只来自选中高亮（实测 0.16%）。A/B：去掉确定性排序后同一测试差异 **8.80%**，说明它确实能抓到“排列跟着 Z 序变”的问题；截图在 `tests/artifacts/expose-order-1.png` / `-2.png`。
+- `DockRestoreTest.exe`：自己开一个最大化窗口、贴边、再恢复，并每 8ms 采样窗口矩形，验证恢复过程中**没有一帧掉回旧的还原矩形**（旧实现会掉到 640 宽约 50ms，也就是用户看到的闪烁），结束后重新最大化且客户区一致。
 - `ExposeTest.exe`：全屏覆盖窗口可打开、DWM 缩略图可见、背景壁纸加载、过渡中间帧、Esc 可关闭；截图在 `tests/artifacts/expose-mid.png` 和 `tests/artifacts/expose-test.png`。
 - `DesktopSwipeTest.exe`：桌面滑动 overlay 覆盖整个虚拟屏幕、跟随手指更新偏移、偏移限制在一屏内、提交后只切换一次且方向正确、切换后 overlay 销毁、短距离滑动取消且不切换；截图在 `tests/artifacts/desktop-slide-*.png`。测试用空实现替代真实切换，不会真的切走桌面。
 - `SettingsDialogTest.exe`：打开设置对话框、截图、点“确定”，验证回传的五个映射和窗口销毁；截图在 `tests/artifacts/settings-dialog.png`。
@@ -434,6 +463,10 @@ tests\SettingsDialogTest.exe
 - `ExposeTest.exe`：全部通过（overlay 打开、DWM 缩略图可见、壁纸加载、过渡中间帧、Esc 关闭）。
 - `DesktopSwipeTest.exe`：全部通过（overlay 几何、跟手偏移、范围限制、提交一次且方向正确、销毁、取消不切换）。
 - `SettingsDialogTest.exe`：全部通过（对话框能打开且尺寸合理、五个下拉框显示当前映射、点“确定”回传的值与配置一致、保存后窗口销毁）；截图 `tests/artifacts/settings-dialog.png`。
+- `DockRestoreTest.exe`：全部通过（端到端：只管理测试进程自己的窗口，最大化后贴边、再恢复；恢复过程中窗口宽度始终是 1936，**没有一帧掉回 640 的还原矩形**，结束后重新最大化且客户区完全一致）。
+- `ExposeFocusTest.exe`：全部通过（选中窗口后 `GetForegroundWindow` 在遮罩仍存在时就已经是目标窗口，遮罩关闭后仍是它）。
+- `ExposeOrderTest.exe`：全部通过（两组不同 Z 序/前台的截图差异 0.16%，只来自选中高亮；A/B 去掉排序后 8.80%）。
+- 网格布局：7 个窗口打开 App Expose 得到 3×3 网格（截图 `tests/artifacts/expose-order-1.png`），不再是单列或单行。
 - 启动测试：Release `Gestosh.exe` 可启动，检测到触摸板并注册 Raw Input，热键注册成功，`--exit` 正常退出。
 - 版本资源：打补丁后 6 个语言的 `StringTable` 都能用 `VerQueryValue` 逐条读出“文件说明 + 备注”；`RT_ICON`（7 个尺寸）、`RT_GROUP_ICON`、`RT_VERSION`、`RT_MANIFEST` 资源齐全，内嵌 manifest 的字节与 `src\Gestosh.manifest` 完全一致。签名流程用 `sign.ps1 -SelfSigned` 验证过：签名可写入、可回读签名者和时间戳状态。
 

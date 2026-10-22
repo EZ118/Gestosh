@@ -1,0 +1,15 @@
+[PASS] Gestosh started : pid=21720
+[PASS] test window created : hwnd=3672398
+[PASS] test window maximized : zoomed=True
+  maximized window: -8,-8 1936x1056
+  maximized client: 0,23 1920x1017
+  docked window: -8,-1014 1936x1056
+[PASS] window was docked : -8,-1014 1936x1056
+[PASS] docked window keeps its (maximized) width : dockedWidth=1936
+[PASS] docked window is a normal window : zoomed=False
+  restore samples: minWidth=1936 maxWidth=1936 smallSamples=0
+  restored window: -8,-8 1936x1056
+[PASS] restored window is maximized again : zoomed=True
+[PASS] restore never dropped to the small restore rectangle : smallSamples=0 minWidth=1936
+[PASS] restored window matches the maximized frame : -8,-8 1936x1056
+[PASS] restored client matches the maximized client : 0,23 1920x1017

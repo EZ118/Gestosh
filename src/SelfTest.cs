@@ -98,6 +98,8 @@ namespace Gestosh
             {
                 TestDrag(test);
                 TestExposeSwipe(test);
+                TestExposeOrder(test);
+                TestExposeGrid(test);
                 TestDesktopSwipe(test);
                 TestGestureActions(test);
                 TestPinch(test);
@@ -141,6 +143,81 @@ namespace Gestosh
             test.Check("3-finger drag begins and moves", began && dragged,
                 "begin=" + sink.BeginCount + " drag=" + sink.DragCount + " dx=" + sink.DragX.ToString("0.000"));
             test.Check("3-finger drag releases", sink.EndCount == 1, "end=" + sink.EndCount);
+        }
+
+        static void TestExposeGrid(TestContext test)
+        {
+            int rows;
+            int columns;
+            ExposeOverlay.ChooseGrid(7, 1.44, 1856, 953, out rows, out columns);
+            test.Check("7 windows lay out as a grid", rows == 3 && columns == 3, rows + "x" + columns);
+            ExposeOverlay.ChooseGrid(4, 1.40, 1856, 953, out rows, out columns);
+            test.Check("4 windows lay out 2x2", rows == 2 && columns == 2, rows + "x" + columns);
+            ExposeOverlay.ChooseGrid(2, 1.60, 1856, 953, out rows, out columns);
+            test.Check("2 windows lay out side by side", rows == 1 && columns == 2, rows + "x" + columns);
+            ExposeOverlay.ChooseGrid(12, 1.40, 1856, 953, out rows, out columns);
+            test.Check("12 windows spread over several rows", rows >= 3 && columns >= 3, rows + "x" + columns);
+        }
+
+        static WindowInfo MakeWindow(int hwnd, string title, int x, int y)
+        {
+            var window = new WindowInfo();
+            window.Hwnd = new IntPtr(hwnd);
+            window.Title = title;
+            window.Rect = new RECT();
+            window.Rect.Left = x;
+            window.Rect.Top = y;
+            window.Rect.Right = x + 400;
+            window.Rect.Bottom = y + 300;
+            return window;
+        }
+
+        static string ExposeOrder(List<WindowInfo> windows)
+        {
+            windows.Sort(ExposeOverlay.CompareExposeOrder);
+            var text = new StringBuilder();
+            foreach (var window in windows)
+            {
+                if (text.Length > 0) text.Append(',');
+                text.Append(window.Hwnd.ToInt32());
+            }
+            return text.ToString();
+        }
+
+        static void TestExposeOrder(TestContext test)
+        {
+            var first = new List<WindowInfo>();
+            first.Add(MakeWindow(101, "Alpha", 0, 0));
+            first.Add(MakeWindow(102, "Beta", 700, 0));
+            first.Add(MakeWindow(103, "Gamma", 0, 500));
+            first.Add(MakeWindow(104, "Delta", 700, 500));
+
+            var second = new List<WindowInfo>();
+            second.Add(MakeWindow(104, "Delta", 700, 500));
+            second.Add(MakeWindow(102, "Beta", 700, 0));
+            second.Add(MakeWindow(101, "Alpha", 0, 0));
+            second.Add(MakeWindow(103, "Gamma", 0, 500));
+
+            string orderedFirst = ExposeOrder(first);
+            string orderedSecond = ExposeOrder(second);
+            test.Check("App Expose order ignores z-order", orderedFirst == orderedSecond,
+                orderedFirst + " vs " + orderedSecond);
+            test.Check("App Expose order follows the window positions", orderedFirst == "101,102,103,104", orderedFirst);
+
+            var ties = new List<WindowInfo>();
+            ties.Add(MakeWindow(30, "Zeta", 0, 0));
+            ties.Add(MakeWindow(10, "alpha", 0, 0));
+            ties.Add(MakeWindow(20, "Beta", 0, 0));
+            string orderedTies = ExposeOrder(ties);
+            test.Check("App Expose ties stay stable by handle", orderedTies == "10,20,30", orderedTies);
+
+            var renamed = new List<WindowInfo>();
+            renamed.Add(MakeWindow(30, "A different title", 0, 0));
+            renamed.Add(MakeWindow(10, "Another title", 0, 0));
+            renamed.Add(MakeWindow(20, "Third title", 0, 0));
+            string orderedRenamed = ExposeOrder(renamed);
+            test.Check("App Expose order ignores title changes", orderedRenamed == orderedTies,
+                orderedTies + " vs " + orderedRenamed);
         }
 
         static void TestExposeSwipe(TestContext test)

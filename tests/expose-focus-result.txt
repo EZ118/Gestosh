@@ -1,0 +1,7 @@
+[PASS] Gestosh started
+[PASS] two test windows created : a=10749052 b=4850112
+[PASS] App Expose opened : hwnd=11797042
+[PASS] a test window became foreground : target=4850112 before=10749052
+[PASS] foreground switch happened while the overlay was still visible : overlayAlive=True
+[PASS] overlay is gone : hwnd=11797042
+[PASS] chosen window stays in the foreground : after=4850112 target=4850112

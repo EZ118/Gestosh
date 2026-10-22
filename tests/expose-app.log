@@ -1,0 +1,88 @@
+﻿2026-10-22 14:57:19.328 [I] Gestosh starting. PID=5964 exe=E:\Gestosh\dist\Gestosh.Debug.exe
+2026-10-22 14:57:19.329 [I] Config: E:\Gestosh\tests\expose-test.ini
+2026-10-22 14:57:19.329 [I] Log: E:\Gestosh\tests\expose-app.log
+2026-10-22 14:57:19.352 [I] VirtualDesktopManager available.
+2026-10-22 14:57:19.360 [I] touchpad: \\?\HID#GXTP7863&Col02#4&15672ccf&0&0001#{4d1e55b2-f16f-11cf-88cb-001111000030}
+  reportId=4 inputReportLength=30 contactCount=True contacts=5
+  link 1: id=True x=[0,1919] y=[0,1079] tip=True conf=True
+  link 2: id=True x=[0,1919] y=[0,1079] tip=True conf=True
+  link 3: id=True x=[0,1919] y=[0,1079] tip=True conf=True
+  link 4: id=True x=[0,1919] y=[0,1079] tip=True conf=True
+  link 5: id=True x=[0,1919] y=[0,1079] tip=True conf=True
+  includesReportId=unknown
+
+2026-10-22 14:57:19.361 [I] Raw input registered (precision touchpad).
+2026-10-22 14:57:19.367 [D] App Expose wallpaper: c:\users\zhou\pictures\wallpaper\majestic_mountain_bliss.jpg 3840x2160
+2026-10-22 14:57:19.545 [I] Gestosh 1.4.2.0 (10-22 14:56) initialized. Touchpad found=True, tray=False, desktopSwipe=on
+2026-10-22 14:57:20.573 [D] Expose scan: 3 window(s).
+2026-10-22 14:57:20.610 [I] App Expose opened with 3 window(s), focus=0.
+2026-10-22 14:57:22.936 [D] Expose scan: 3 window(s).
+2026-10-22 14:57:22.949 [I] App Expose opened with 3 window(s), focus=0.
+2026-10-22 14:57:23.447 [I] Shutting down.
+2026-10-22 14:57:23.462 [I] Stopped.
+2026-10-22 14:58:57.490 [I] Gestosh starting. PID=13992 exe=E:\Gestosh\dist\Gestosh.Debug.exe
+2026-10-22 14:58:57.491 [I] Config: E:\Gestosh\tests\expose-test.ini
+2026-10-22 14:58:57.491 [I] Log: E:\Gestosh\tests\expose-app.log
+2026-10-22 14:58:57.507 [I] VirtualDesktopManager available.
+2026-10-22 14:58:57.516 [I] touchpad: \\?\HID#GXTP7863&Col02#4&15672ccf&0&0001#{4d1e55b2-f16f-11cf-88cb-001111000030}
+  reportId=4 inputReportLength=30 contactCount=True contacts=5
+  link 1: id=True x=[0,1919] y=[0,1079] tip=True conf=True
+  link 2: id=True x=[0,1919] y=[0,1079] tip=True conf=True
+  link 3: id=True x=[0,1919] y=[0,1079] tip=True conf=True
+  link 4: id=True x=[0,1919] y=[0,1079] tip=True conf=True
+  link 5: id=True x=[0,1919] y=[0,1079] tip=True conf=True
+  includesReportId=unknown
+
+2026-10-22 14:58:57.517 [I] Raw input registered (precision touchpad).
+2026-10-22 14:58:57.523 [D] App Expose wallpaper: c:\users\zhou\pictures\wallpaper\majestic_mountain_bliss.jpg 3840x2160
+2026-10-22 14:58:57.698 [I] Gestosh 1.4.2.0 (10-22 14:58) initialized. Touchpad found=True, tray=False, desktopSwipe=on
+2026-10-22 14:58:58.739 [D] Expose scan: 3 window(s).
+2026-10-22 14:58:58.774 [I] App Expose opened with 3 window(s), focus=0.
+2026-10-22 14:59:01.098 [D] Expose scan: 3 window(s).
+2026-10-22 14:59:01.105 [I] App Expose opened with 3 window(s), focus=0.
+2026-10-22 14:59:01.610 [I] Shutting down.
+2026-10-22 14:59:01.621 [I] Stopped.
+2026-10-22 14:59:35.980 [I] Gestosh starting. PID=17140 exe=E:\Gestosh\dist\Gestosh.Debug.exe
+2026-10-22 14:59:35.981 [I] Config: E:\Gestosh\tests\expose-test.ini
+2026-10-22 14:59:35.981 [I] Log: E:\Gestosh\tests\expose-app.log
+2026-10-22 14:59:35.996 [I] VirtualDesktopManager available.
+2026-10-22 14:59:36.004 [I] touchpad: \\?\HID#GXTP7863&Col02#4&15672ccf&0&0001#{4d1e55b2-f16f-11cf-88cb-001111000030}
+  reportId=4 inputReportLength=30 contactCount=True contacts=5
+  link 1: id=True x=[0,1919] y=[0,1079] tip=True conf=True
+  link 2: id=True x=[0,1919] y=[0,1079] tip=True conf=True
+  link 3: id=True x=[0,1919] y=[0,1079] tip=True conf=True
+  link 4: id=True x=[0,1919] y=[0,1079] tip=True conf=True
+  link 5: id=True x=[0,1919] y=[0,1079] tip=True conf=True
+  includesReportId=unknown
+
+2026-10-22 14:59:36.005 [I] Raw input registered (precision touchpad).
+2026-10-22 14:59:36.012 [D] App Expose wallpaper: c:\users\zhou\pictures\wallpaper\majestic_mountain_bliss.jpg 3840x2160
+2026-10-22 14:59:36.187 [I] Gestosh 1.4.2.0 (10-22 14:58) initialized. Touchpad found=True, tray=False, desktopSwipe=on
+2026-10-22 14:59:37.237 [D] Expose scan: 3 window(s).
+2026-10-22 14:59:37.278 [I] App Expose opened with 3 window(s), focus=0.
+2026-10-22 14:59:39.591 [D] Expose scan: 3 window(s).
+2026-10-22 14:59:39.605 [I] App Expose opened with 3 window(s), focus=0.
+2026-10-22 14:59:40.102 [I] Shutting down.
+2026-10-22 14:59:40.112 [I] Stopped.
+2026-10-22 15:21:26.243 [I] Gestosh starting. PID=9612 exe=E:\Gestosh\dist\Gestosh.Debug.exe
+2026-10-22 15:21:26.244 [I] Config: E:\Gestosh\tests\expose-test.ini
+2026-10-22 15:21:26.244 [I] Log: E:\Gestosh\tests\expose-app.log
+2026-10-22 15:21:26.260 [I] VirtualDesktopManager available.
+2026-10-22 15:21:26.269 [I] touchpad: \\?\HID#GXTP7863&Col02#4&15672ccf&0&0001#{4d1e55b2-f16f-11cf-88cb-001111000030}
+  reportId=4 inputReportLength=30 contactCount=True contacts=5
+  link 1: id=True x=[0,1919] y=[0,1079] tip=True conf=True
+  link 2: id=True x=[0,1919] y=[0,1079] tip=True conf=True
+  link 3: id=True x=[0,1919] y=[0,1079] tip=True conf=True
+  link 4: id=True x=[0,1919] y=[0,1079] tip=True conf=True
+  link 5: id=True x=[0,1919] y=[0,1079] tip=True conf=True
+  includesReportId=unknown
+
+2026-10-22 15:21:26.270 [I] Raw input registered (precision touchpad).
+2026-10-22 15:21:26.276 [D] App Expose wallpaper: c:\users\zhou\pictures\wallpaper\majestic_mountain_bliss.jpg 3840x2160
+2026-10-22 15:21:26.456 [I] Gestosh 1.5.0.0 (10-22 15:21) initialized. Touchpad found=True, tray=False, desktopSwipe=on
+2026-10-22 15:21:27.484 [D] Expose scan: 3 window(s).
+2026-10-22 15:21:27.512 [I] App Expose opened with 3 window(s), focus=0.
+2026-10-22 15:21:29.878 [D] Expose scan: 3 window(s).
+2026-10-22 15:21:29.892 [I] App Expose opened with 3 window(s), focus=0.
+2026-10-22 15:21:30.381 [I] Shutting down.
+2026-10-22 15:21:30.391 [I] Stopped.

@@ -1,6 +1,6 @@
 virtual screen 1920x1080 at 0,0
-[PASS] desktop slide overlay opens : hwnd=7014498
-[PASS] overlay window is visible : hwnd=7014498
+[PASS] desktop slide overlay opens : hwnd=3212942
+[PASS] overlay window is visible : hwnd=3212942
 [PASS] overlay covers the virtual screen : 0,0 1920x1080
   screenshot: E:\Gestosh\tests\artifacts\desktop-slide-start.png
 [PASS] fingers move the captured desktop : offset=-576 expected=-576
@@ -9,8 +9,8 @@ virtual screen 1920x1080 at 0,0
   screenshot: E:\Gestosh\tests\artifacts\desktop-slide-deep.png
   incoming layer sample near the right edge: #423221
 [PASS] committed slide switches one desktop : switches=1 direction=1
-[PASS] overlay disappears after the switch : hwnd=7014498
-[PASS] second overlay opens for the cancel case : hwnd=7080034
+[PASS] overlay disappears after the switch : hwnd=3212942
+[PASS] second overlay opens for the cancel case : hwnd=3278478
 [PASS] cancel slide moves to the right : offset=192
 [PASS] short slide cancels without switching : switches=0
-[PASS] cancelled overlay disappears : hwnd=7080034
+[PASS] cancelled overlay disappears : hwnd=3278478

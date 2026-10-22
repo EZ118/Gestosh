@@ -76,7 +76,7 @@ static class PatchVersion
         }
 
         string path = Path.GetFullPath(args[0]);
-        string version = args.Length > 1 ? args[1] : "1.4.0.0";
+        string version = args.Length > 1 ? args[1] : "1.5.0.0";
         if (!File.Exists(path))
         {
             Console.Error.WriteLine("file not found: " + path);
